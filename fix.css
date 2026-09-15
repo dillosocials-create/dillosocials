@@ -1,7 +1,7 @@
 /* Final asset fix: use the complete uploaded logo and exact social-campaign artwork. */
 .site-header .brand{display:flex!important;align-items:center!important;width:145px!important;height:44px!important;background:none!important}
 .site-header .brand img{visibility:visible!important;display:block!important;width:145px!important;height:44px!important;object-fit:contain!important}
-.featured .art-social{background:#ffd51b url('assets/social-campaign.svg') center/cover no-repeat!important;overflow:hidden!important}
+.featured .art-social{background:#ffd51b url('assets/social-campaign-png.svg') center/100% 100% no-repeat!important;overflow:hidden!important}
 .featured .art-social:before,.featured .art-social:after,.featured .art-social .art-copy,.featured .art-social .orb-a,.featured .art-social .orb-b,.featured .art-social .phone{display:none!important}
 footer img{visibility:visible!important;width:110px!important;height:50px!important;object-fit:contain!important}
 footer a:first-child{display:none!important}
