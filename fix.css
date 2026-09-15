@@ -1,6 +1,6 @@
-/* Dillo Social Campaign - use the exact supplied campaign artwork */
+/* Dillo Social Campaign - exact supplied artwork */
 .site-header .brand{display:flex!important;align-items:center!important;width:145px!important;height:44px!important;background:none!important}
 .site-header .brand img{display:block!important;visibility:visible!important;width:145px!important;height:44px!important;object-fit:contain!important}
 
-.featured .art-social{background:#ffd51b url('assets/social-campaign.svg?v=10') center center/100% 100% no-repeat!important;overflow:hidden!important;position:relative!important}
+.featured .art-social{background:#ffd51b url('assets/social-campaign.jpg?v=11') center center/100% 100% no-repeat!important;overflow:hidden!important;position:relative!important}
 .featured .art-social > *{display:none!important}
