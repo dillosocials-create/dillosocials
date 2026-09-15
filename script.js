@@ -1,3 +1,5 @@
+const contactStylesheet=document.createElement('link');contactStylesheet.rel='stylesheet';contactStylesheet.href='contact.css?v=2';document.head.appendChild(contactStylesheet);
+
 const gallery=document.getElementById('gallery');
 const allShots=[...document.querySelectorAll('.shot')];
 const categories=[...document.querySelectorAll('.category')];
@@ -41,10 +43,8 @@ allShots.forEach(shot=>shot.addEventListener('mouseenter',()=>{if(shot.classList
 document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const target=document.querySelector(a.getAttribute('href'));if(target){e.preventDefault();target.scrollIntoView({behavior:'smooth'})}}));
 window.addEventListener('resize',()=>setActive(activeIndex,false));
 
-// Upgrade the contact area into the guided, email-style inquiry form.
 const contact=document.querySelector('.contact');
 if(contact){
-  const link=contact.querySelector('a[href^="mailto:"]');
   contact.innerHTML=`
     <div class="contact-inner">
       <div class="contact-head">
@@ -68,10 +68,9 @@ if(contact){
       <p class="contact-note">Prefer email? hello@dillosocials.com</p>
       <div class="contact-success" id="contactSuccess">Your email draft is ready — just press send.</div>
     </div>`;
-  const form=document.getElementById('contactForm');
-  form.addEventListener('submit',e=>{
+  document.getElementById('contactForm').addEventListener('submit',e=>{
     e.preventDefault();
-    const data=new FormData(form);
+    const data=new FormData(e.currentTarget);
     const subject=encodeURIComponent(`Dillo Socials inquiry from ${data.get('name')}`);
     const body=encodeURIComponent(`Name: ${data.get('name')}\nEmail: ${data.get('email')}\nMobile: ${data.get('phone')||'—'}\nService: ${data.get('service')||'—'}\n\n${data.get('message')}`);
     window.location.href=`mailto:hello@dillosocials.com?subject=${subject}&body=${body}`;
