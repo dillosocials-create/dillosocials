@@ -2,12 +2,8 @@
 .site-header .brand{display:flex!important;align-items:center!important;width:145px!important;height:44px!important;background:none!important}
 .site-header .brand img{visibility:visible!important;display:block!important;width:145px!important;height:44px!important;object-fit:contain!important}
 
-/* Featured campaign: crisp Dillo dinosaur, no blurred raster */
-.featured .art-social{background:#ffd51b!important;overflow:hidden!important;position:relative!important}
-.featured .art-social:after{content:''!important;display:block!important;position:absolute!important;right:-2%!important;bottom:-12%!important;width:62%!important;height:112%!important;background:url('assets/dillo-dinosaur.svg') center bottom/contain no-repeat!important;z-index:10!important;pointer-events:none!important}
-.featured .art-social:before{content:'Dillo\\A Socials'!important;white-space:pre!important;position:absolute!important;left:7%!important;top:18%!important;font:700 30px/.88 'Space Grotesk',Arial,sans-serif!important;color:#111827!important;z-index:11!important;transform:rotate(-5deg)!important}
-.featured .art-social .mini-nav{display:none!important}
-.featured .art-social .art-copy,.featured .art-social .orb-a,.featured .art-social .orb-b,.featured .art-social .phone{display:none!important}
-
+/* Featured campaign: use the exact client-provided Social Media Campaign artwork */
+.featured .art-social{background:#ffd51b url('assets/social-campaign-dinosaur.svg') center/100% 100% no-repeat!important;overflow:hidden!important;position:relative!important}
+.featured .art-social:before,.featured .art-social:after,.featured .art-social .art-copy,.featured .art-social .orb-a,.featured .art-social .orb-b,.featured .art-social .phone{display:none!important}
 footer img{visibility:visible!important;width:110px!important;height:50px!important;object-fit:contain!important}
 footer a:first-child{display:none!important}
