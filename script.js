@@ -4,25 +4,17 @@ const categories=[...document.querySelectorAll('.category')];
 let activeIndex=0,timer=null,dragging=false,startX=0,startTranslate=0;
 function visibleShots(){return [...gallery.querySelectorAll('.shot:not(.hidden)')]}
 function setActive(index,animate=true){const shots=visibleShots();if(!shots.length)return;activeIndex=(index+shots.length)%shots.length;shots.forEach((s,i)=>s.classList.toggle('active',i===activeIndex));const a=shots[activeIndex];if(a){const target=a.offsetLeft-(window.innerWidth-a.offsetWidth)/2;gallery.style.transition=animate?'transform .7s cubic-bezier(.2,.75,.2,1)':'none';gallery.style.transform=`translateX(${-Math.max(0,target)}px)`}const c=document.getElementById('currentProject');if(c)c.textContent=String(activeIndex+1).padStart(2,'0')}
-function startAuto(){clearInterval(timer);timer=setInterval(()=>{if(!document.hidden&&!dragging)setActive(activeIndex+1)},3800)}
-function pauseAuto(){clearInterval(timer)}
+function startAuto(){clearInterval(timer);timer=setInterval(()=>{if(!document.hidden&&!dragging)setActive(activeIndex+1)},3800)}function pauseAuto(){clearInterval(timer)}
 categories.forEach(b=>b.addEventListener('click',()=>{categories.forEach(x=>x.classList.remove('active'));b.classList.add('active');const f=b.dataset.filter;allShots.forEach(s=>s.classList.toggle('hidden',f!=='all'&&s.dataset.category!==f));activeIndex=0;setActive(0);startAuto()}));
 document.getElementById('prevProject')?.addEventListener('click',()=>{setActive(activeIndex-1);startAuto()});document.getElementById('nextProject')?.addEventListener('click',()=>{setActive(activeIndex+1);startAuto()});
 gallery.addEventListener('pointerdown',e=>{dragging=true;pauseAuto();startX=e.clientX;startTranslate=parseFloat((gallery.style.transform.match(/-?[\d.]+px/)||[])[0])||0;gallery.classList.add('dragging');gallery.setPointerCapture(e.pointerId)});gallery.addEventListener('pointermove',e=>{if(!dragging)return;gallery.style.transition='none';gallery.style.transform=`translateX(${Math.min(0,startTranslate+e.clientX-startX)}px)`});function endDrag(){if(!dragging)return;dragging=false;gallery.classList.remove('dragging');const shots=visibleShots();const centers=shots.map(s=>Math.abs((s.getBoundingClientRect().left+s.getBoundingClientRect().width/2)-innerWidth/2));activeIndex=Math.max(0,centers.indexOf(Math.min(...centers)));setActive(activeIndex);startAuto()}gallery.addEventListener('pointerup',endDrag);gallery.addEventListener('pointercancel',endDrag);gallery.addEventListener('mouseleave',()=>{if(!dragging)startAuto()});
 document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'})}}));
 document.querySelectorAll('a.portfolio-link[href]').forEach(a=>a.addEventListener('click',e=>{if(e.defaultPrevented)return;const href=a.href;if(!href||href.startsWith(window.location.href+'#'))return;e.preventDefault();const overlay=document.getElementById('portfolioTransition');if(!overlay){window.location.href=href;return}overlay.classList.add('is-leaving');window.setTimeout(()=>{window.location.href=href},520)}));
-
-// Scroll transitions replay every time a section enters the viewport.
 const sections=[...document.querySelectorAll('main > section')];
 const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-if(!reduced&&'IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.remove('reveal-in');void entry.target.offsetWidth;entry.target.classList.add('reveal-in')}else{entry.target.classList.remove('reveal-in')}})},{threshold:.12,rootMargin:'0px 0px -8% 0px'});sections.forEach(s=>observer.observe(s))}
-
-// Always return to the Home/top section when the page is refreshed or restored.
-if('scrollRestoration' in history)history.scrollRestoration='manual';
-function goHomeOnRefresh(){window.scrollTo(0,0)}
-window.addEventListener('load',()=>{goHomeOnRefresh();setTimeout(goHomeOnRefresh,50)});
-window.addEventListener('pageshow',event=>{if(event.persisted)goHomeOnRefresh()});
-
+if(reduced){sections.forEach(s=>s.classList.add('reveal-in'))}else{const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting)entry.target.classList.add('reveal-in');else entry.target.classList.remove('reveal-in')})},{threshold:0.08,rootMargin:'0px 0px -5% 0px'});sections.forEach(s=>observer.observe(s))}
+// Force every normal reload of the homepage to begin at the top. This runs before images settle and again after load.
+(function(){if(location.hash){history.replaceState(null,'',location.pathname+location.search)}if('scrollRestoration' in history)history.scrollRestoration='manual';const goTop=()=>window.scrollTo(0,0);goTop();document.addEventListener('DOMContentLoaded',goTop,{once:true});window.addEventListener('load',()=>{goTop();requestAnimationFrame(goTop);setTimeout(goTop,50);setTimeout(goTop,250)},{once:true});window.addEventListener('pageshow',goTop)})();
 window.addEventListener('resize',()=>setActive(activeIndex,false));
 const form=document.getElementById('contactForm');if(form){form.addEventListener('submit',e=>{e.preventDefault();const d=new FormData(form);const subject=encodeURIComponent(`Dillo Socials inquiry from ${d.get('name')}`);const body=encodeURIComponent(`Name: ${d.get('name')}\nEmail: ${d.get('email')}\nMobile: ${d.get('phone')||'—'}\nService: ${d.get('service')||'—'}\n\n${d.get('message')}`);window.location.href=`mailto:dillosocials@gmail.com?subject=${subject}&body=${body}`;const success=document.getElementById('contactSuccess');if(success)success.classList.add('show')})}
 setActive(0,false);startAuto();
