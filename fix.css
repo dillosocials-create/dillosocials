@@ -15,4 +15,15 @@
 .project-controls button#nextProject:hover{transform:translate(2px,2px) rotate(5deg)!important}
 .project-count{font-weight:700!important;letter-spacing:.06em!important;margin:0 6px!important}
 
-@media(max-width:600px){.project-controls button{width:42px!important;height:42px!important;border-radius:12px!important;font-size:19px!important}}
+/* Dillo → Notion transition */
+.portfolio-transition{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:#fffdf7;color:#5a2b12;opacity:0;visibility:hidden;pointer-events:none;transform:scale(1.04);transition:opacity .42s ease,transform .52s cubic-bezier(.2,.8,.2,1),visibility 0s linear .52s}
+.portfolio-transition.is-leaving{opacity:1;visibility:visible;pointer-events:auto;transform:scale(1);transition:opacity .3s ease,transform .52s cubic-bezier(.2,.8,.2,1),visibility 0s}
+.portfolio-transition-inner{display:flex;align-items:center;gap:14px;font:700 14px/1 'Space Grotesk',sans-serif;letter-spacing:.13em}
+.portfolio-transition-inner i{width:72px;height:4px;border-radius:99px;background:#159cf2;position:relative;overflow:hidden}
+.portfolio-transition-inner i:after{content:"";position:absolute;inset:0;background:#ffd21a;transform:translateX(-100%);animation:portfolioLoad .7s ease forwards}
+.transition-dillo{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:#ffd21a;border:2px solid #5a2b12;box-shadow:3px 3px 0 #5a2b12;font-size:20px;animation:portfolioPop .6s cubic-bezier(.2,1.4,.4,1) both}
+.portfolio-link{cursor:pointer}
+@keyframes portfolioLoad{to{transform:translateX(0)}}
+@keyframes portfolioPop{0%{transform:scale(.4) rotate(-12deg);opacity:0}100%{transform:scale(1) rotate(3deg);opacity:1}}
+@media(prefers-reduced-motion:reduce){.portfolio-transition,.portfolio-transition.is-leaving{transition:none}.portfolio-transition-inner i:after,.transition-dillo{animation:none}}
+@media(max-width:600px){.project-controls button{width:42px!important;height:42px!important;border-radius:12px!important;font-size:19px!important}.portfolio-transition-inner{font-size:11px;letter-spacing:.09em;gap:10px}.portfolio-transition-inner i{width:48px}}
