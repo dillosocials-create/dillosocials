@@ -18,6 +18,10 @@ function endDrag(){if(!dragging)return;dragging=false;gallery.classList.remove('
 gallery.addEventListener('pointerup',endDrag);gallery.addEventListener('pointercancel',endDrag);gallery.addEventListener('mouseleave',()=>{if(!dragging)startAuto()});
 
 document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'})}}));
+
+// Give the Notion portfolio a branded Dillo-style page transition before leaving.
+document.querySelectorAll('a.portfolio-link[href]').forEach(a=>a.addEventListener('click',e=>{if(e.defaultPrevented)return;const href=a.href;if(!href||href.startsWith(window.location.href+'#'))return;e.preventDefault();const overlay=document.getElementById('portfolioTransition');if(!overlay){window.location.href=href;return}overlay.classList.add('is-leaving');window.setTimeout(()=>{window.location.href=href},520)}));
+
 window.addEventListener('resize',()=>setActive(activeIndex,false));
 
 const form=document.getElementById('contactForm');
