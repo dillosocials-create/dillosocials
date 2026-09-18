@@ -19,3 +19,16 @@ const form=document.getElementById('contactForm');if(form){form.addEventListener
 // Expand one service at a time and keep the arrow meaningful.
 document.querySelectorAll('.service-card').forEach(card=>{const toggle=()=>{const open=card.classList.contains('is-open');document.querySelectorAll('.service-card.is-open').forEach(other=>{other.classList.remove('is-open');other.setAttribute('aria-expanded','false')});if(!open){card.classList.add('is-open');card.setAttribute('aria-expanded','true')}};card.addEventListener('click',e=>{if(e.target.closest('a'))return;toggle()});card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle()}})});
 setActive(0,false);startAuto();
+/* Interactive five-slide showcase */
+const toolSlides=[...document.querySelectorAll('.tool-slide')],toolBars=[...document.querySelectorAll('.tool-progress-segment')],toolDots=[...document.querySelectorAll('.tool-dots button')];
+let toolIndex=0,toolTimer=null,toolTouchX=0;
+function showTool(n){if(!toolSlides.length)return;toolIndex=(n+toolSlides.length)%toolSlides.length;toolSlides.forEach((s,i)=>s.classList.toggle('active',i===toolIndex));toolBars.forEach((b,i)=>b.classList.toggle('active',i===toolIndex));toolDots.forEach((b,i)=>b.classList.toggle('active',i===toolIndex))}
+function startToolAuto(){clearInterval(toolTimer);toolTimer=setInterval(()=>showTool(toolIndex+1),5200)}
+document.getElementById('toolPrev')?.addEventListener('click',()=>{showTool(toolIndex-1);startToolAuto()});
+document.getElementById('toolNext')?.addEventListener('click',()=>{showTool(toolIndex+1);startToolAuto()});
+toolDots.forEach((b,i)=>b.addEventListener('click',()=>{showTool(i);startToolAuto()}));
+const toolStage=document.querySelector('.tool-stage');
+toolStage?.addEventListener('touchstart',e=>{toolTouchX=e.changedTouches[0].clientX;clearInterval(toolTimer)},{passive:true});
+toolStage?.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-toolTouchX;if(Math.abs(dx)>45)showTool(toolIndex+(dx<0?1:-1));startToolAuto()},{passive:true});
+toolStage?.addEventListener('mouseenter',()=>clearInterval(toolTimer));toolStage?.addEventListener('mouseleave',startToolAuto);
+showTool(0);startToolAuto();
