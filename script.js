@@ -32,3 +32,32 @@ toolStage?.addEventListener('touchstart',e=>{toolTouchX=e.changedTouches[0].clie
 toolStage?.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-toolTouchX;if(Math.abs(dx)>45)showTool(toolIndex+(dx<0?1:-1));startToolAuto()},{passive:true});
 toolStage?.addEventListener('mouseenter',()=>clearInterval(toolTimer));toolStage?.addEventListener('mouseleave',startToolAuto);
 showTool(0);startToolAuto();
+
+/* Real interactive demo controls */
+(()=>{
+ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+ const money=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n);
+ const crmForm=$('#crmForm'), crmRows=$('#crmRows'), crmCount=$('#crmCount');
+ let savedClients=Number(localStorage.getItem('dilloDemoClients')||0);
+ function initials(n){return n.trim().split(/\\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase()}
+ function renderCRM(){const stored=JSON.parse(localStorage.getItem('dilloDemoCRM')||'[]');stored.forEach(c=>{if(!document.querySelector('[data-client="'+CSS.escape(c.name)+'"]')){const row=document.createElement('div');row.className='ui-row';row.dataset.client=c.name;row.innerHTML='<i>'+initials(c.name)+'</i><span>'+c.name.replace(/[<>]/g,'')+'</span><b>'+c.status+'</b>';crmRows.appendChild(row)}});crmCount.textContent=(24+stored.length)+' active contacts'}
+ crmForm?.addEventListener('submit',e=>{e.preventDefault();const d=new FormData(crmForm), arr=JSON.parse(localStorage.getItem('dilloDemoCRM')||'[]');arr.push({name:d.get('client'),status:d.get('status')});localStorage.setItem('dilloDemoCRM',JSON.stringify(arr));crmForm.reset();renderCRM()});
+ $('#crmAdd')?.addEventListener('click',()=>{crmForm?.querySelector('input')?.focus()});renderCRM();
+
+ const cal=$('#demoCalendar'), bookingStatus=$('#bookingStatus');
+ cal?.querySelectorAll('span').forEach(day=>day.addEventListener('click',()=>{cal.querySelectorAll('.picked').forEach(x=>x.classList.remove('picked'));day.classList.add('picked');bookingStatus.textContent='Date selected: July '+day.textContent+' — ready to book.'}));
+ $('#bookNow')?.addEventListener('click',()=>{const d=cal?.querySelector('.picked');bookingStatus.textContent=d?'✓ Booking confirmed for July '+d.textContent+'.':'Please select a date first.';localStorage.setItem('dilloDemoBooking',d?.textContent||'')});
+
+ const invoiceForm=$('#invoiceForm'), invoiceItems=$('#invoiceItems'), invoiceTotal=$('#invoiceTotal'), invoiceBar=$('#invoiceBar'), invoiceMessage=$('#invoiceMessage');
+ let invoiceAmount=2400;
+ invoiceForm?.addEventListener('submit',e=>{e.preventDefault();const d=new FormData(invoiceForm), amount=Number(d.get('amount'))||0;invoiceAmount+=amount;const row=document.createElement('div');row.className='invoice-item';row.innerHTML='<span>'+String(d.get('item')).replace(/[<>]/g,'')+'</span><span>'+money(amount)+'</span>';invoiceItems.appendChild(row);invoiceTotal.textContent=money(invoiceAmount);invoiceBar.textContent=money(invoiceAmount);invoiceForm.reset();invoiceMessage.textContent='✓ Invoice recalculated. Total updated instantly.'});
+ $('#invoicePaid')?.addEventListener('click',e=>{e.currentTarget.textContent='PAID ✓';e.currentTarget.classList.add('paid');invoiceMessage.textContent='✓ Invoice marked as paid.';localStorage.setItem('dilloDemoInvoicePaid','1')});
+
+ const portalMessage=$('#portalMessage'), portalProgress=$('#portalProgress'), portalProgressText=$('#portalProgressText');
+ $$('.file-approve').forEach(btn=>btn.addEventListener('click',()=>{const file=btn.closest('.portal-file');btn.textContent='Approved';btn.disabled=true;file.querySelector('span').textContent='Approved';let p=Math.min(100,Number((portalProgressText.textContent||'72').replace('%',''))+10);portalProgress.style.width=p+'%';portalProgressText.textContent=p+'%';portalMessage.textContent='✓ Approval saved. Project progress increased.'}));
+ $('#portalUpload')?.addEventListener('change',e=>{const f=e.target.files?.[0];if(!f)return;const row=document.createElement('div');row.className='portal-file';row.innerHTML='<i>▰</i> '+f.name.replace(/[<>]/g,'')+' <span>Uploaded</span><button type="button" class="file-approve">Approve</button>';$('#portalFiles').appendChild(row);row.querySelector('.file-approve').addEventListener('click',()=>{row.querySelector('.file-approve').textContent='Approved';row.querySelector('.file-approve').disabled=true;row.querySelector('span').textContent='Approved';portalMessage.textContent='✓ Uploaded file approved.'});portalMessage.textContent='✓ '+f.name+' added to the portal.';e.target.value=''});
+
+ let ops={revenue:18400,jobs:12,overdue:2};const savedOps=localStorage.getItem('dilloDemoOps');if(savedOps)ops=JSON.parse(savedOps);
+ function renderOps(){const r=$('#opsRevenue'),j=$('#opsJobs'),o=$('#opsOverdue');if(r)r.textContent='$'+(ops.revenue/1000).toFixed(1)+'k';if(j)j.textContent=ops.jobs;if(o)o.textContent=ops.overdue;localStorage.setItem('dilloDemoOps',JSON.stringify(ops))}
+ $('#opsAdd')?.addEventListener('click',()=>{ops.jobs++;ops.revenue+=850;renderOps()});$('#opsComplete')?.addEventListener('click',()=>{if(ops.jobs>0)ops.jobs--;ops.revenue+=500;renderOps()});$('#opsOverdueBtn')?.addEventListener('click',()=>{ops.overdue++;renderOps()});renderOps();
+})();
